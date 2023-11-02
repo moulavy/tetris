@@ -5,3 +5,8 @@ const game = new Game();
 window.game = game;
 
 console.log(game);
+for (let index = 0; index < 19; index++) {
+   game.movePieceDown();
+   
+}
+console.log(game.playfield)
