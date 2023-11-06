@@ -6,16 +6,10 @@ export default class Game {
       '4': 1200
    };
    constructor() {
-      this.score = 0;
-      this.lines = 0;
-      //поле в тетрисе имеет размеры 10*20
-      this.playfield = this.createPlayfield();
-      //активная фигура
-      this.activePiece = this.createPiece();
-      this.nextPiece = this.createPiece();
+      this.reset();
    }
 
-   get level() {
+   get level() {     
       return Math.floor(this.lines * 0.1);
    }
 
@@ -45,8 +39,19 @@ export default class Game {
          level:this.level,
          lines:this.lines,
          nextPiece:this.nextPiece,
-         playfield
+         playfield,
+         isGameOver: this.topOut
       }
+   }
+   reset() {
+      this.score = 0;
+      this.lines = 0;
+      this.topOut = false;
+      //поле в тетрисе имеет размеры 10*20
+      this.playfield = this.createPlayfield();
+      //активная фигура
+      this.activePiece = this.createPiece();
+      this.nextPiece = this.createPiece();
    }
 
    createPlayfield() {
@@ -138,6 +143,9 @@ export default class Game {
       }
    }
    movePieceDown() {
+      if (this.topOut) {
+         return;
+      }
       this.activePiece.y += 1;//пермещение фигуры вниз
       if (this.hasObstacle()) {//если фигура сталкивается с границей или другой фигурой
          this.activePiece.y -= 1;//возвращаем фигуру на предыдущую позицию
@@ -145,6 +153,9 @@ export default class Game {
          const clearedLines = this.clearLines();
          this.updateScore(clearedLines);
          this.updatePieces();
+      }
+      if (this.hasObstacle()) {
+         this.topOut = true;
       }
    }
    rotatePiece() {
