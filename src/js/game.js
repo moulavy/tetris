@@ -9,20 +9,20 @@ export default class Game {
       this.activePiece = this.createPiece();
       this.nextPiece = this.createPiece();
    }
-//возвращает текущее состояние игрового поля, для отображения фигур на экране
+   //возвращает текущее состояние игрового поля, для отображения фигур на экране
    getState() {
       const playfield = this.createPlayfield();
       //извлекаем координаты и форму фигуры через деструктуризацию
       const { y: pieceY, x: pieceX, blocks } = this.activePiece;
       //создаем копию игрового поля, чтобы не менять состояние оригинального поля
-      for (let y = 0; y < this.playfield.length; y++){
+      for (let y = 0; y < this.playfield.length; y++) {
          playfield[y] = [];
-         for (let x = 0; x < this.playfield[y].length; x++){
-            playfield[y][x]=this.playfield[y][x]
+         for (let x = 0; x < this.playfield[y].length; x++) {
+            playfield[y][x] = this.playfield[y][x]
          }
       }
-//обновляем временное игровое поле в соответствии с активной фигурой
-      for (let y = 0; y < blocks.length; y++) {        
+      //обновляем временное игровое поле в соответствии с активной фигурой
+      for (let y = 0; y < blocks.length; y++) {
          for (let x = 0; x < blocks[y].length; x++) {
             if (blocks[y][x]) {
                //копируем на игровое поле с учетом смещения
@@ -37,9 +37,9 @@ export default class Game {
 
    createPlayfield() {
       const playfield = [];
-      for (let y = 0; y < 20; y++){
+      for (let y = 0; y < 20; y++) {
          playfield[y] = [];
-         for (let x = 0; x < 10; x++){
+         for (let x = 0; x < 10; x++) {
             playfield[y][x] = 0;
          }
       }
@@ -48,7 +48,7 @@ export default class Game {
    createPiece() {
       const index = Math.floor(Math.random() * 7);
       const type = 'IJLOSTZ'[index];
-      const piece = { };
+      const piece = {};
       switch (type) {
          case 'I':
             piece.blocks = [
@@ -57,6 +57,7 @@ export default class Game {
                [0, 0, 0, 0],
                [0, 0, 0, 0]
             ];
+            break;
          case 'J':
             piece.blocks = [
                [0, 0, 0],
@@ -82,7 +83,7 @@ export default class Game {
          case 'S':
             piece.blocks = [
                [0, 0, 0],
-               [0, 5,5],
+               [0, 5, 5],
                [5, 5, 0]
             ];
             break;
@@ -127,6 +128,7 @@ export default class Game {
       if (this.hasObstacle()) {//если фигура сталкивается с границей или другой фигурой
          this.activePiece.y -= 1;//возвращаем фигуру на предыдущую позицию
          this.lockPiece();//фиксируем фигуру на игровом поле
+         this.clearLines();
          this.updatePieces();
       }
    }
@@ -140,8 +142,8 @@ export default class Game {
          tempRotate[i] = new Array(length).fill(0);
       }
       //вращаем матрицу, переносим блоки из исходной матрицы blocks во временную tempRotate, вращая на 90 градусов blocks
-      for (let y = 0; y < length; y++){
-         for (let x = 0; x < length; x++){
+      for (let y = 0; y < length; y++) {
+         for (let x = 0; x < length; x++) {
             tempRotate[x][y] = blocks[length - 1 - y][x];
          }
       }
@@ -156,14 +158,14 @@ export default class Game {
    hasObstacle() {
       //получаем активные координаты, положение и форму активной фигуры
       const { y: pieceY, x: pieceX, blocks } = this.activePiece;
-      
+
       //внешний цикл перебирает ряды, внутренний цикл перебирает элементы ряда
       for (let row = 0; row < blocks.length; row++) {
          for (let col = 0; col < blocks[row].length; col++) {
             //проверяем если часть блока видимая (не 0) и (фигура выходит за границу поля или на этой позиции уже занято другой фигурой)
-            if (blocks[row][col] && 
+            if (blocks[row][col] &&
                ((this.playfield[pieceY + row] === undefined || this.playfield[pieceY + row][pieceX + col] === undefined) ||
-               this.playfield[pieceY + row][pieceX + col])) {
+                  this.playfield[pieceY + row][pieceX + col])) {
                return true;//возвращаем true - фигура имеет препятствие, невозможно выполнить действие
             }
          }
@@ -172,8 +174,8 @@ export default class Game {
    }
    //метод который переносит фигуру на игровое поле(фиксирует фигуру)
    lockPiece() {
-      const { y: pieceY, x: pieceX,blocks} = this.activePiece;
-      
+      const { y: pieceY, x: pieceX, blocks } = this.activePiece;
+
       //внешний цикл перебирает ряды, внутренний цикл перебирает элементы ряда
       // копируем значения из матрицы фигуры в игровое поле
       for (let row = 0; row < blocks.length; row++) {
@@ -184,6 +186,36 @@ export default class Game {
          }
       }
    }
+
+   clearLines() {
+      const rows = 20;
+      const columns = 10;
+      let lines = [];
+      for (let y = rows - 1; y >= 0; y--) {
+         let numberOfBlocks = 0;
+         for (let x = 0; x < columns; x++) {
+            if (this.playfield[y][x]) {
+               numberOfBlocks += 1;
+            }
+         }
+         //если линия пустая то выходим, так как выше рядов быть не может
+         if (numberOfBlocks === 0) {
+            break;
+         }
+         else if (numberOfBlocks < columns) {
+            continue;
+         }
+         else if (numberOfBlocks === columns) {
+            lines.unshift(y)
+         }
+      }
+
+      for (let index of lines) {
+         this.playfield.splice(index, 1);
+         this.playfield.unshift(new Array(columns).fill(0));
+      }
+   }
+
    updatePieces() {
       this.activePiece = this.nextPiece;
       this.nextPiece = this.createPiece();
