@@ -6,8 +6,8 @@ export default class View {
       '4': 'yellow',
       '5': 'green',
       '6': 'purple',
-      '7':'red'
-      }
+      '7': 'red'
+   }
    constructor(element, width, height, rows, columns) {
       this.element = element;
       this.width = width;
@@ -24,12 +24,13 @@ export default class View {
       this.element.appendChild(this.canvas);
    }
    //на основе массива playfield строим представление
-   renderGame({ playfield }) {
+   renderGame(state) {
       this.clearScreen();
-      this.renderPlayfield(playfield);
+      this.renderPlayfield(state);
+      this.renderPanel(state)
    }
 
-   renderPlayfield(playfield) {
+   renderPlayfield({playfield}) {
       for (let row = 0; row < playfield.length; row++) {         
          for (let col = 0; col < playfield[row].length; col++) {
             const block = playfield[row][col];
@@ -38,6 +39,9 @@ export default class View {
             }
          }
       }
+   }
+   renderPanel({level,score,lines,nextPiece}) {
+      
    }
    renderBlock(x,y,width,height,color) {
       this.context.fillStyle = color;

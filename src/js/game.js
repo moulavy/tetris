@@ -1,20 +1,24 @@
 export default class Game {
    static points = {
-      '1': 10,
-      '2': 50,
-      '3': 200,
-      '4': 500
+      '1': 40,
+      '2': 100,
+      '3': 300,
+      '4': 1200
    };
    constructor() {
       this.score = 0;
       this.lines = 0;
-      this.level = 0;
       //поле в тетрисе имеет размеры 10*20
       this.playfield = this.createPlayfield();
       //активная фигура
       this.activePiece = this.createPiece();
       this.nextPiece = this.createPiece();
    }
+
+   get level() {
+      return Math.floor(this.lines * 0.1);
+   }
+
    //возвращает текущее состояние игрового поля, для отображения фигур на экране
    getState() {
       const playfield = this.createPlayfield();
@@ -134,7 +138,7 @@ export default class Game {
       if (this.hasObstacle()) {//если фигура сталкивается с границей или другой фигурой
          this.activePiece.y -= 1;//возвращаем фигуру на предыдущую позицию
          this.lockPiece();//фиксируем фигуру на игровом поле
-         const clearedLines=this.clearLines();
+         const clearedLines = this.clearLines();
          this.updateScore(clearedLines);
          this.updatePieces();
       }
@@ -225,9 +229,8 @@ export default class Game {
 
    updateScore(clearedLines) {
       if (clearedLines > 0) {
-         this.score += Game.points[clearedLines];
+         this.score += Game.points[clearedLines] * (this.level + 1);
          this.lines += clearedLines;
-         console.log(this.score, this.lines)
       }
    }
 
