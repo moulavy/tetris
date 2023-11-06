@@ -17,19 +17,27 @@ export default class View {
    //на основе массива playfield строим представление
    renderGame({ playfield }) {
       this.clearScreen();
-      for (let row = 0; row < playfield.length; row++){
+      this.renderPlayfield(playfield);
+   }
+
+   renderPlayfield(playfield) {
+      for (let row = 0; row < playfield.length; row++) {
          const line = playfield[row];
-         for (let col = 0; col < line.length; col++){
+         for (let col = 0; col < line.length; col++) {
             const block = line[col];
             if (block) {
-               this.context.fillStyle = 'red';
-               this.context.strokeStyle = 'black';
-               this.context.lineWidth = 2;
-
-               this.context.fillRect(col*this.blockWidth,row*this.blockHeight,this.blockWidth,this.blockHeight)
+               this.renderBlock(col * this.blockWidth, row * this.blockHeight, this.blockWidth, this.blockHeight,'red')
             }
          }
       }
+   }
+   renderBlock(x,y,width,height,color) {
+      this.context.fillStyle = color;
+      this.context.strokeStyle = 'black';
+      this.context.lineWidth = 2;
+
+      this.context.fillRect(x, y, width, height);
+      this.context.strokeRect(x, y, width, height);
    }
    clearScreen() {
       //очищаем весь холст

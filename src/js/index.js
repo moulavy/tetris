@@ -13,9 +13,25 @@ const view=new View(root,320,640,20,10)
 window.game = game;
 window.view = view;
 
-view.renderPlayfield(game.getState());
-// for (let index = 0; index < 19; index++) {
-//    game.movePieceDown();
+document.addEventListener('keydown', event => {
+   switch (event.keyCode) {
+      case 37://LEFT ARROW
+         game.movePieceLeft();
+         view.renderGame(game.getState());
+         break;
+      case 38://UP ARROW
+         game.rotatePiece();
+         view.renderGame(game.getState());
+         break;
+      case 39://RIGHT ARROW
+         game.movePieceRight();
+         view.renderGame(game.getState());
+         break;
+      case 40://DOWN ARROW
+         game.movePieceDown();
+         view.renderGame(game.getState());
+         break;
+   }
    
-// }
-// console.log(game.playfield)
+})
+
