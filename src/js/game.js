@@ -1,4 +1,10 @@
 export default class Game {
+   static points = {
+      '1': 10,
+      '2': 50,
+      '3': 200,
+      '4': 500
+   };
    constructor() {
       this.score = 0;
       this.lines = 0;
@@ -128,7 +134,8 @@ export default class Game {
       if (this.hasObstacle()) {//если фигура сталкивается с границей или другой фигурой
          this.activePiece.y -= 1;//возвращаем фигуру на предыдущую позицию
          this.lockPiece();//фиксируем фигуру на игровом поле
-         this.clearLines();
+         const clearedLines=this.clearLines();
+         this.updateScore(clearedLines);
          this.updatePieces();
       }
    }
@@ -175,7 +182,6 @@ export default class Game {
    //метод который переносит фигуру на игровое поле(фиксирует фигуру)
    lockPiece() {
       const { y: pieceY, x: pieceX, blocks } = this.activePiece;
-
       //внешний цикл перебирает ряды, внутренний цикл перебирает элементы ряда
       // копируем значения из матрицы фигуры в игровое поле
       for (let row = 0; row < blocks.length; row++) {
@@ -213,6 +219,15 @@ export default class Game {
       for (let index of lines) {
          this.playfield.splice(index, 1);
          this.playfield.unshift(new Array(columns).fill(0));
+      }
+      return lines.length;
+   }
+
+   updateScore(clearedLines) {
+      if (clearedLines > 0) {
+         this.score += Game.points[clearedLines];
+         this.lines += clearedLines;
+         console.log(this.score, this.lines)
       }
    }
 
