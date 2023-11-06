@@ -1,4 +1,13 @@
 export default class View {
+   static colors = {
+      '1': 'cyan',
+      '2': 'blue',
+      '3': 'orange',
+      '4': 'yellow',
+      '5': 'green',
+      '6': 'purple',
+      '7':'red'
+      }
    constructor(element, width, height, rows, columns) {
       this.element = element;
       this.width = width;
@@ -21,12 +30,11 @@ export default class View {
    }
 
    renderPlayfield(playfield) {
-      for (let row = 0; row < playfield.length; row++) {
-         const line = playfield[row];
-         for (let col = 0; col < line.length; col++) {
-            const block = line[col];
+      for (let row = 0; row < playfield.length; row++) {         
+         for (let col = 0; col < playfield[row].length; col++) {
+            const block = playfield[row][col];
             if (block) {
-               this.renderBlock(col * this.blockWidth, row * this.blockHeight, this.blockWidth, this.blockHeight,'red')
+               this.renderBlock(col * this.blockWidth, row * this.blockHeight, this.blockWidth, this.blockHeight,View.colors[block])
             }
          }
       }

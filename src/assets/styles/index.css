@@ -1,7 +1,7 @@
 #root{
    display: flex;
    justify-content: center;
-   
+  
 }
 .title{
    text-align: center;
@@ -9,5 +9,6 @@
 #root canvas{
    display: block;
    margin: 0 auto;
-   border: 2px solid black;
+   border: 2px solid yellow;
+    background-color: black;
 }

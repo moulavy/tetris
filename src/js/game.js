@@ -6,33 +6,26 @@ export default class Game {
       //поле в тетрисе имеет размеры 10*20
       this.playfield = this.createPlayfield();
       //активная фигура
-      this.activePiece = {
-         x: 0,//текущая позиция фигуры по горизонтали
-         y: 0,//текущая позиция фигуры по веертикали
-         get blocks() {
-            return this.rotations[this.rotationIndex];
-         },
-         blocks: [
-            [0, 1, 0],
-            [1, 1, 1],
-            [0, 0, 0]
-         ],
-      }
+      this.activePiece = this.createPiece();
+      this.nextPiece = this.createPiece();
    }
-   
+//возвращает текущее состояние игрового поля, для отображения фигур на экране
    getState() {
       const playfield = this.createPlayfield();
+      //извлекаем координаты и форму фигуры через деструктуризацию
       const { y: pieceY, x: pieceX, blocks } = this.activePiece;
+      //создаем копию игрового поля, чтобы не менять состояние оригинального поля
       for (let y = 0; y < this.playfield.length; y++){
          playfield[y] = [];
          for (let x = 0; x < this.playfield[y].length; x++){
             playfield[y][x]=this.playfield[y][x]
          }
       }
-
+//обновляем временное игровое поле в соответствии с активной фигурой
       for (let y = 0; y < blocks.length; y++) {        
          for (let x = 0; x < blocks[y].length; x++) {
             if (blocks[y][x]) {
+               //копируем на игровое поле с учетом смещения
                playfield[pieceY + y][pieceX + x] = blocks[y][x];
             }
          }
@@ -52,6 +45,70 @@ export default class Game {
       }
       return playfield;
    }
+   createPiece() {
+      const index = Math.floor(Math.random() * 7);
+      const type = 'IJLOSTZ'[index];
+      const piece = { };
+      switch (type) {
+         case 'I':
+            piece.blocks = [
+               [0, 0, 0, 0],
+               [1, 1, 1, 1],
+               [0, 0, 0, 0],
+               [0, 0, 0, 0]
+            ];
+         case 'J':
+            piece.blocks = [
+               [0, 0, 0],
+               [2, 2, 2],
+               [0, 0, 2]
+            ];
+            break;
+         case 'L':
+            piece.blocks = [
+               [0, 0, 0],
+               [3, 3, 3],
+               [3, 0, 0]
+            ];
+            break;
+         case 'O':
+            piece.blocks = [
+               [0, 0, 0, 0],
+               [0, 4, 4, 0],
+               [0, 4, 4, 0],
+               [0, 0, 0, 0]
+            ];
+            break;
+         case 'S':
+            piece.blocks = [
+               [0, 0, 0],
+               [0, 5,5],
+               [5, 5, 0]
+            ];
+            break;
+         case 'T':
+            piece.blocks = [
+               [0, 0, 0],
+               [6, 6, 6],
+               [0, 6, 0]
+            ];
+            break;
+         case 'Z':
+            piece.blocks = [
+               [0, 0, 0],
+               [7, 7, 0],
+               [0, 7, 7]
+            ];
+            break;
+         default:
+            throw new Error('Неизвестный тип фигуры.')
+      }
+      //посчитаем на сколько влево надо сдвинуться
+      piece.x = Math.floor((10 - piece.blocks[0].length) / 2);
+      //зададим -1 из за отступа фигуры
+      piece.y = -1;
+      return piece;
+   }
    //перемещение
    movePieceLeft() {
       this.activePiece.x -= 1;//пермещение фигуры влево
@@ -70,6 +127,7 @@ export default class Game {
       if (this.hasObstacle()) {//если фигура сталкивается с границей или другой фигурой
          this.activePiece.y -= 1;//возвращаем фигуру на предыдущую позицию
          this.lockPiece();//фиксируем фигуру на игровом поле
+         this.updatePieces();
       }
    }
    rotatePiece() {
@@ -125,5 +183,9 @@ export default class Game {
             }
          }
       }
+   }
+   updatePieces() {
+      this.activePiece = this.nextPiece;
+      this.nextPiece = this.createPiece();
    }
 }
