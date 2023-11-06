@@ -5,7 +5,7 @@ const root = document.querySelector('#root');
 
 
 const game = new Game();
-const view=new View(root,320,640,20,10)
+const view=new View(root,480,640,20,10)
 
 
 
@@ -17,19 +17,19 @@ document.addEventListener('keydown', event => {
    switch (event.keyCode) {
       case 37://LEFT ARROW
          game.movePieceLeft();
-         view.renderGame(game.getState());
+         view.renderMainScreen(game.getState());
          break;
       case 38://UP ARROW
          game.rotatePiece();
-         view.renderGame(game.getState());
+         view.renderMainScreen(game.getState());
          break;
       case 39://RIGHT ARROW
          game.movePieceRight();
-         view.renderGame(game.getState());
+         view.renderMainScreen(game.getState());
          break;
       case 40://DOWN ARROW
          game.movePieceDown();
-         view.renderGame(game.getState());
+         view.renderMainScreen(game.getState());
          break;
    }
    

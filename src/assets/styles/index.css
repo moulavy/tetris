@@ -1,3 +1,6 @@
+body{
+background-color: black;
+}
 #root{
    display: flex;
    justify-content: center;
@@ -5,10 +8,11 @@
 }
 .title{
    text-align: center;
+   color: beige;
+   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 #root canvas{
    display: block;
    margin: 0 auto;
-   border: 2px solid yellow;
     background-color: black;
 }
